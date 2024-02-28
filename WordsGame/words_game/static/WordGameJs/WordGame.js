@@ -72,7 +72,7 @@ $(document).ready(function() {
     // Получаем значение поля ввода с именем игрока
     var playerName = $("#player_name").val();
 
-    // Выполняем AJAX-запрос к вашему методу create_player
+    // Выполняем AJAX-запрос test вашему методу create_player
     $.ajax({
       type: "POST",
       url: "/your-url-for-create-player/",
