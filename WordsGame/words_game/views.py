@@ -92,8 +92,8 @@ def time_is_up(request, game_id):
         'gameStatus': 'finished'
     })
 
-# important // если не post, то рендерим index.html иначе
-def index(request):
+# important // если не post, то рендерим MainPage.html иначе
+def MainPage(request):
     if request.method == 'POST':
         player_name = request.POST.get('player_name')
         response = requests.post('http://127.0.0.1:8000/api/games/start', data={'name': player_name})
@@ -109,7 +109,7 @@ def index(request):
         else:
             return JsonResponse({'error': 'Failed to create player'}, status=400)
 
-    return render(request, 'index.html')
+    return render(request, 'MainPage.html')
 
 
 from django.shortcuts import render
