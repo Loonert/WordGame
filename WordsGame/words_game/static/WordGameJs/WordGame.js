@@ -63,25 +63,25 @@
 //    })
 
 
-$(document).ready(function() {
-  // Вешаем обработчик события на отправку формы
-  $(".CreatePlayerForm").submit(function(event) {
-    // Отменяем стандартное действие формы, чтобы страница не перезагружалась
-    event.preventDefault();
-
-    // Получаем значение поля ввода с именем игрока
-    var playerName = $("#player_name").val();
-
-    // Выполняем AJAX-запрос test вашему методу create_player
-    $.ajax({
-      type: "POST",
-      url: "/your-url-for-create-player/",
-      data: { name: playerName },
-      success: function(response) {
-        // Делаем что-то с полученными данными, например, выводим ID игрока
-        console.log("Player ID: " + response.playerID);
-      },
-      dataType: "json"
-    });
-  });
-});
+//$(document).ready(function() {
+//  // Вешаем обработчик события на отправку формы
+//  $(".CreatePlayerForm").submit(function(event) {
+//    // Отменяем стандартное действие формы, чтобы страница не перезагружалась
+//    event.preventDefault();
+//
+//    // Получаем значение поля ввода с именем игрока
+//    var playerName = $("#player_name").val();
+//
+//    // Выполняем AJAX-запрос test вашему методу create_player
+//    $.ajax({
+//      type: "POST",
+//      url: "/your-url-for-create-player/",
+//      data: { name: playerName },
+//      success: function(response) {
+//        // Делаем что-то с полученными данными, например, выводим ID игрока
+//        console.log("Player ID: " + response.playerID);
+//      },
+//      dataType: "json"
+//    });
+//  });
+//});

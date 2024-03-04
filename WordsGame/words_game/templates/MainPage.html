@@ -13,17 +13,12 @@
 <body>
     <h1>Words Game</h1>
     <div id="game-interface">
-        <!-- Форма создания нового игрока -->
-        <!-- Форма создания нового игрока -->
-        <!-- Форма создания нового игрока -->
-        <form class="CreatePlayerForm" method="post" action="{% url 'create_player' %}">
+        <form class="CreatePlayerForm" method="post" action="{% url 'main_page' %}">
             {% csrf_token %}
             <label for="player_name">Enter your name:</label>
             <input type="text" id="player_name" name="name" required>
             <button type="submit">Start Game</button>
         </form>
-
     </div>
-
 </body>
 </html>
