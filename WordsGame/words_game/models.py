@@ -1,11 +1,7 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
-
 class Player(models.Model):
     name = models.CharField(max_length=50)
-    # Другие поля, которые могут быть полезными для вашего приложения
 
     def __str__(self):
         return self.name

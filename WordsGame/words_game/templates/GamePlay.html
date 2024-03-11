@@ -1,36 +1,20 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Words Game - Game Page</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Game Page</title>
+    <!-- Добавьте ваши стили и скрипты по необходимости -->
 </head>
 <body>
-    <h1>Words Game - Game Page</h1>
-    <div id="game-interface">
-        <p>Game ID: {{ game_id }}</p>
-
-        <!-- Форма ввода слова -->
-        <form method="post" action="{% url 'check_word' game_id %}">
-            {% csrf_token %}
-            <label for="word">Enter a word:</label>
-            <input type="text" id="word" name="word" required>
-            <button type="submit">Submit Word</button>
-        </form>
-
-        <!-- Кнопка передачи хода -->
-        <form method="post" action="{% url 'pass_turn' game_id %}">
-            {% csrf_token %}
-            <button type="submit">Pass Turn</button>
-        </form>
-
-        <!-- Дополнительные элементы интерфейса (если нужно) -->
-
-    </div>
-
-    <script src="{% static 'wordgame.js' %}"></script>
+    <h1>Game Page</h1>
+    <p>Game ID: {{ game.id }}</p>
+    <p>Players:</p>
+    <ul>
+        {% for player in players %}
+            <li>{{ player.name }}</li>
+        {% endfor %}
+    </ul>
+    <!-- Добавьте остальной контент страницы игры по необходимости -->
 </body>
 </html>
