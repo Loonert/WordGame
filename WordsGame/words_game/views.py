@@ -22,18 +22,15 @@ def start_page(request):
     player = Player.objects.get(id=player_id)
 
     if request.method == 'POST':
-        # Проверяем, есть ли свободные лобби
         games_waiting = Game.objects.filter(game_state='waiting').exclude(players=player)
 
         if games_waiting.exists():
-            # Если есть свободное лобби, подключаем игрока и переходим в него
             game = games_waiting.first()
             game.players.add(player)
             game.save()
 
             return JsonResponse({'success': True, 'waiting': True, 'game_id': game.id})
         else:
-            # Если свободных лобби нет, создаем новую игру и переходим в нее
             game = Game.objects.create(current_player=player, game_state='waiting')
             game.players.add(player)
             game.save()
@@ -43,13 +40,21 @@ def start_page(request):
     return render(request, 'StartPage.html', {'player_name': player.name})
 
 
+
 def game_waiting(request, game_id):
     game_waiting = Game.objects.get(id=game_id, game_state='waiting')
     players = game_waiting.players.all()
 
     # Если в комнате ожидания достаточно игроков, переходим в игру
     if players.count() >= 2:
+        # Добавим задержку перед переходом в GamePlay
         time.sleep(5)  # Задержка 5 секунд (ваш таймер)
+
+        # Обновляем статус игры
+        game_waiting.game_state = 'playing'
+        game_waiting.save()
+
+        # Перенаправляем в GamePlay
         return redirect('game_page', game_id=game_id)
 
     player_id = request.session.get('player_id')
@@ -59,13 +64,17 @@ def game_waiting(request, game_id):
     else:
         return HttpResponseNotFound("Player not found")
 
-
-
 def game_page(request, game_id):
     try:
         game = Game.objects.get(pk=game_id)
         players = game.players.all()
-        return render(request, 'GamePlay.html', {'game': game, 'players': players})
+
+        if game.game_state == 'playing':
+            # Если игра в состоянии playing, перенаправляем в GamePlay
+            return render(request, 'GamePlay.html', {'game': game, 'players': players})
+        else:
+            # Иначе, оставляем на странице ожидания
+            return render(request, 'GameWaiting.html', {'game_waiting': game, 'players': players, 'game_id': game_id})
+
     except Game.DoesNotExist:
-        # Обработка случая, когда игра с указанным game_id не существует
         return HttpResponseNotFound("Game not found")

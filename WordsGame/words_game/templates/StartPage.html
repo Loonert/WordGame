@@ -35,7 +35,7 @@
     $(document).ready(function () {
         $("#startGame").on("click", function () {
             $('#waitingModal').modal('show');
-            console.log("test")
+
             $.ajax({
                 type: "POST",
                 url: "{% url 'start_page' %}",
@@ -43,10 +43,11 @@
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 },
                 success: function (data) {
+                    // Перенаправление в GameWaiting
                     window.location.href = `/game_waiting/${data.game_id}/`;
                 },
                 error: function (error) {
-                    console.error("Error123123:", error);
+                    console.error("Error:", error);
                 },
                 complete: function () {
                     $('#waitingModal').modal('hide');
