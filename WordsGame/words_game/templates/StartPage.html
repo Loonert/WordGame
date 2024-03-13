@@ -13,7 +13,6 @@
     <h1>Words Game</h1>
     <div id="game-interface">
         <p>Welcome, {{ player_name }}!</p>
-        <p>Your game ID is: {{ game_id }}</p>
 
         <button id="startGame" class="btn btn-primary">Start Game</button>
 
@@ -32,36 +31,31 @@
             </div>
         </div>
 
-        <script>
-            $(document).ready(function () {
-                $("#startGame").on("click", function () {
-                    $('#waitingModal').modal('show');
-                    console.log("test")
-                    $.ajax({
-                        type: "POST",
-                        url: "{% url 'start_page' %}",
-                        data: {
-                            csrfmiddlewaretoken: '{{ csrf_token }}'
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                console.log(data);
-                                // Перенаправление на страницу игры с использованием параметра запроса
-                                window.location.href = "{% url 'game_page' game_id=0 %}?game_id=" + data.game_id;
-                            } else {
-                                console.error("Error:", data.error);
-                            }
-                        },
-                        error: function (error) {
-                            console.error("Error:", error);
-                        },
-                        complete: function () {
-                            $('#waitingModal').modal('hide');
-                        }
-                    });
-                });
+<script>
+    $(document).ready(function () {
+        $("#startGame").on("click", function () {
+            $('#waitingModal').modal('show');
+            console.log("test")
+            $.ajax({
+                type: "POST",
+                url: "{% url 'start_page' %}",
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    window.location.href = `/game_waiting/${data.game_id}/`;
+                },
+                error: function (error) {
+                    console.error("Error123123:", error);
+                },
+                complete: function () {
+                    $('#waitingModal').modal('hide');
+                }
             });
-        </script>
+        });
+    });
+</script>
+
     </div>
 </body>
 </html>
