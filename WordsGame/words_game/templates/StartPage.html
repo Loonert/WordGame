@@ -8,20 +8,80 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src='{% static "WordGameJs/WordGame.js" %}'></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa; /* светлый серый цвет фона */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #007bff; /* синий цвет */
+            font-size: 48px; /* увеличенный размер шрифта */
+            margin-bottom: 30px; /* больший отступ снизу */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* тень текста */
+            animation: fadeInDown 1s ease-in-out; /* анимация появления */
+        }
+
+        #game-interface {
+            text-align: center; /* выравнивание текста по центру */
+        }
+
+        p {
+            font-size: 20px; /* размер шрифта */
+            margin-bottom: 20px; /* отступ снизу */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* синий цвет фона кнопки */
+            color: #fff; /* белый цвет текста на кнопке */
+            border: none; /* без границы */
+            padding: 10px 20px; /* внутренние отступы */
+            font-size: 24px; /* размер шрифта */
+            cursor: pointer; /* изменение курсора при наведении */
+            transition: background-color 0.3s ease; /* плавное изменение цвета фона при наведении */
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* темно-синий цвет фона при наведении */
+        }
+
+        .modal-content {
+            background-color: #fff; /* белый цвет фона модального окна */
+            border-radius: 10px; /* закругленные углы */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* тень модального окна */
+        }
+
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Words Game</h1>
     <div id="game-interface">
-        <p>Welcome, {{ player_name }}!</p>
-
-        <button id="startGame" class="btn btn-primary">Start Game</button>
+        <h1>Слова</h1>
+        <p>Добро пожаловать в игру, {{ player_name }}!</p>
+        <button id="startGame" class="btn btn-primary">Начать игру</button>
 
         <!-- Модальное окно -->
         <div class="modal fade" id="waitingModal" tabindex="-1" role="dialog" aria-labelledby="waitingModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="waitingModalLabel">Waiting for an opponent...</h5>
+                        <h5 class="modal-title" id="waitingModalLabel">Ожидание 2 игрока...</h5>
                     </div>
                     <div class="modal-body">
                         <!-- Добавьте любой контент, который вы хотите отображать в модальном окне -->
@@ -30,6 +90,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
 <script>
     $(document).ready(function () {
@@ -56,6 +117,5 @@
     });
 </script>
 
-    </div>
 </body>
 </html>
