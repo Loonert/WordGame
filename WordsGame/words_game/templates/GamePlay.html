@@ -1,10 +1,9 @@
+<!-- GamePlay.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Ваши мета-теги и стили здесь -->
     <title>Game Page</title>
-    <!-- Добавьте ваши стили и скрипты по необходимости -->
 </head>
 <body>
     <h1>Game Page</h1>
@@ -13,6 +12,13 @@
     <ul>
         {% for player in players %}
             <li>{{ player.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <p>All Words:</p>
+    <ul>
+        {% for word in all_words %}
+            <li>{{ word }}</li>
         {% endfor %}
     </ul>
     <!-- Добавьте остальной контент страницы игры по необходимости -->

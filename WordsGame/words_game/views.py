@@ -4,6 +4,7 @@ from .models import Player, Game
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseBadRequest
 import time  # Добавим библиотеку для работы с временем
+from .utils import get_all_words
 
 def MainPage(request):
     if request.method == 'POST':
@@ -68,10 +69,11 @@ def game_page(request, game_id):
     try:
         game = Game.objects.get(pk=game_id)
         players = game.players.all()
+        all_words_set = get_all_words()
 
         if game.game_state == 'playing':
             # Если игра в состоянии playing, перенаправляем в GamePlay
-            return render(request, 'GamePlay.html', {'game': game, 'players': players})
+            return render(request, 'GamePlay.html', {'game': game, 'players': players, 'all_words': all_words_set})
         else:
             # Иначе, оставляем на странице ожидания
             return render(request, 'GameWaiting.html', {'game_waiting': game, 'players': players, 'game_id': game_id})
