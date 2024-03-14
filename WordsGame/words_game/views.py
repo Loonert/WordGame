@@ -4,7 +4,7 @@ from .models import Player, Game
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseBadRequest
 import time  # Добавим библиотеку для работы с временем
-from .utils import get_all_words
+from .utils import get_all_words, is_valid_word, get_random_starting_player
 
 def MainPage(request):
     if request.method == 'POST':
@@ -77,6 +77,70 @@ def game_page(request, game_id):
         else:
             # Иначе, оставляем на странице ожидания
             return render(request, 'GameWaiting.html', {'game_waiting': game, 'players': players, 'game_id': game_id})
+
+    except Game.DoesNotExist:
+        return HttpResponseNotFound("Game not found")
+
+def game_play(request, game_id):
+    try:
+        game = Game.objects.get(pk=game_id)
+        players = game.players.all()
+
+        if not game.current_player:
+            game.current_player = get_random_starting_player(players)
+            game.save()
+
+        current_player = game.current_player
+        used_words = set()
+        start_time = time.time()
+
+        winner = None
+
+        if request.method == 'POST':
+            word = request.POST.get('word', '').lower()
+            last_letter = request.POST.get('last_letter', '').lower()
+
+            if is_valid_word(word, used_words, last_letter) and word not in used_words:
+                used_words.add(word)
+
+                current_player = players.filter(id=current_player.id).first()
+                next_player = players.exclude(id=current_player.id).first()
+
+                last_letter = word[-1]
+
+                if 'pass_turn' in request.POST:
+                    if word:
+                        game.current_player = next_player
+                    else:
+                        winner = current_player
+                        game.current_player = None
+                    game.save()
+                    return JsonResponse({'success': True, 'word': word, 'winner': winner.name if winner else None})
+
+                game.current_player = next_player
+                game.save()
+                start_time = time.time()
+
+                return JsonResponse({
+                    'success': True,
+                    'word': word,
+                    'last_letter': last_letter,
+                    'current_player': next_player.name,
+                    'winner': None,
+                })
+
+            else:
+                return JsonResponse({'success': False, 'error': 'Invalid word'})
+
+        elapsed_time = time.time() - start_time
+        remaining_time = max(0, 15 - elapsed_time)
+        if elapsed_time > 15:
+            winner = current_player
+            game.current_player = None
+            game.save()
+            return JsonResponse({'success': True, 'timeout': True, 'winner': winner.name})
+
+        return render(request, 'GamePlay.html', {'game': game, 'players': players, 'current_player': current_player, 'remaining_time': remaining_time})
 
     except Game.DoesNotExist:
         return HttpResponseNotFound("Game not found")

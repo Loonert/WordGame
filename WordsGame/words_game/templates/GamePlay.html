@@ -1,26 +1,79 @@
-<!-- GamePlay.html -->
+<!-- gameplay.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Ваши мета-теги и стили здесь -->
-    <title>Game Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Words Game</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var timerInterval;
+
+            $('#passTurn').on('click', function () {
+                clearInterval(timerInterval);
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "game_play" game.id %}',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        pass_turn: true,
+                        word: $('#wordInput').val(),
+                        last_letter: $('#lastLetter').text()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            if (response.winner) {
+                                alert('Congratulations! ' + response.winner + ' wins!');
+                                window.location.reload();
+                            } else if (response.timeout) {
+                                alert('Time is up! ' + response.winner + ' wins!');
+                                window.location.reload();
+                            } else {
+                                $('#lastLetter').text(response.last_letter);
+                                $('#currentPlayer').text(response.current_player);
+                                $('#wordInput').val('');
+                                startTimer(15);
+                            }
+                        } else {
+                            alert('Error: ' + response.error);
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
+            function startTimer(seconds) {
+                var timerDisplay = $('#timer');
+                var endTime = new Date().getTime() + seconds * 1000;
+
+                function updateTimer() {
+                    var now = new Date().getTime();
+                    var remainingTime = Math.max(0, endTime - now);
+                    var remainingSeconds = Math.floor(remainingTime / 1000);
+                    timerDisplay.text('Timer: ' + remainingSeconds + ' seconds');
+
+                    if (remainingSeconds === 0) {
+                        clearInterval(timerInterval);
+                        alert('Time is up!');
+                        window.location.reload();
+                    }
+                }
+
+                updateTimer();
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        });
+    </script>
 </head>
 <body>
-    <h1>Game Page</h1>
-    <p>Game ID: {{ game.id }}</p>
-    <p>Players:</p>
-    <ul>
-        {% for player in players %}
-            <li>{{ player.name }}</li>
-        {% endfor %}
-    </ul>
-
-    <p>All Words:</p>
-    <ul>
-        {% for word in all_words %}
-            <li>{{ word }}</li>
-        {% endfor %}
-    </ul>
-    <!-- Добавьте остальной контент страницы игры по необходимости -->
+    <h1>Words Game</h1>
+    <p>Last Letter: <span id="lastLetter"></span></p>
+    <p>Current Player: <span id="currentPlayer"></span></p>
+    <p id="timer">Timer: 15 seconds</p>
+    <input type="text" id="wordInput">
+    <button id="passTurn">Pass Turn</button>
 </body>
 </html>
